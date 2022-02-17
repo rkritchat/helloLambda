@@ -24,6 +24,8 @@ func handler(ctx context.Context, req events.APIGatewayProxyRequest) (*events.AP
 		return service.GetUser(req)
 	case http.MethodPost:
 		return service.CreateUser(req)
+	case http.MethodPut:
+		return service.JustReturnErr(req)
 	default:
 		fmt.Printf("method is not allowed, method:%v", req.HTTPMethod)
 		return service.MethodNotAllowed()

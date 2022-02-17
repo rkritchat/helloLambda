@@ -12,6 +12,7 @@ import (
 type Service interface {
 	GetUser(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
 	CreateUser(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
+	JustReturnErr(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error)
 	MethodNotAllowed() (*events.APIGatewayProxyResponse, error)
 }
 
@@ -109,6 +110,10 @@ func toJson(httpStatus int, b interface{}) (*events.APIGatewayProxyResponse, err
 	}, nil
 }
 
+func (s service) JustReturnErr(_ events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+	fmt.Println("coming with method PUT, then just return err")
+	return nil, errors.New("do nothing just Error")
+}
 func (s *service) MethodNotAllowed() (*events.APIGatewayProxyResponse, error) {
 	return toJson(http.StatusBadRequest, errors.New("request http method is not allowed"))
 }
