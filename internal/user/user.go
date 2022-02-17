@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"net/http"
+	"os"
 )
 
 type Service interface {
@@ -29,6 +30,7 @@ type CustomerDetail struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 	Age       int    `json:"age"`
+	Password  string `json:"password"`
 }
 
 func (s *service) GetUser(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
@@ -63,6 +65,9 @@ func (s *service) CreateUser(req events.APIGatewayProxyRequest) (*events.APIGate
 	if isExist {
 		return toJson(http.StatusBadRequest, Response{ErrMsg: errors.New(fmt.Sprintf("email %v is already exists", request.Email)).Error()})
 	}
+
+	//setup password by reading from env
+	request.Password = os.Getenv("ENV_AUTO_GEN_PWD")
 
 	//store to memory
 	s.Users[request.Email] = request
